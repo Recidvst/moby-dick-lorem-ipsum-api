@@ -16,7 +16,6 @@ const router = express.Router({mergeParams: true});
 const port = ( process.env.NODE_ENV === 'production' ) ? process.env.PORT : 8000;
 
 // middleware
-app.use(passport.initialize());
 app.use(morgan('combined'))
 app.use(cors());
 app.use(pretty({ always: true, spaces: 2 }));
