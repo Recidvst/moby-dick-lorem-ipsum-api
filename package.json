@@ -1,0 +1,38 @@
+{
+  "name": "moby-dick-lorem-ipsum",
+  "version": "1.0.0",
+  "description": "To produce a mighty book, you must choose a mighty theme.",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+"
+  },
+  "author": "Chris Snowden <cdsnowden@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "forever": "^0.15.3",
+    "mongodb": "^3.1.1",
+    "mongoose": "^5.2.4",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.18.3",
+    "jsonwebtoken": "^8.3.0",
+    "bcrypt": "^3.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=production forever app.js",
+    "dev": "nodemon --watch app.js",
+    "lint": "eslint **/*.js"
+  },
+  "devDependencies": {
+    "dotenv": "^6.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "express-prettify": "^0.1.0"
+  }
+}
