@@ -24,7 +24,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production forever app.js",
+    "start": "NODE_ENV=production nohup forever app.js &",
     "dev": "nodemon --watch app.js",
     "lint": "eslint **/*.js"
   },
