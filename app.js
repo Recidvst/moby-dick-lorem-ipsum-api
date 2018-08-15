@@ -25,10 +25,12 @@ app.use(cookieParser());
 
 // define routes
 const snippetsRouter = require('./routes/snippets');
+const chaptersRouter = require('./routes/chapters');
 const usersRouter = require('./routes/users');
 
 // get routes
 app.use('/snippets', snippetsRouter);
+app.use('/chapters', snippetsRouter);
 app.use('/users', usersRouter);
 app.use('/', indexRouter);
 

@@ -3,59 +3,100 @@ const express = require('express');
 // filesystem
 const fs = require('fs');
 // scraping
-const request = require('request');
+const requestP = require('request-promise');
 const cheerio = require('cheerio');
 // middleware
 const cors = require('cors')
 const morgan = require('morgan')
-const pretty = require('express-prettify');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const parseString = require('xml2js').parseString;
 
 // declare app
 const app = express();
 const port = ( process.env.NODE_ENV === 'production' ) ? process.env.PORT : 8000;
+
 // middleware
 app.use(morgan('combined'))
 app.use(cors());
-app.use(pretty({ always: true, spaces: 2 }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
 
-app.get('/scrape', function(req, res){
+  // set scrape url && requestP options (instruct cheerio)
+  url = 'http://www.gutenberg.org/files/2701/2701-h/2701-h.htm'; // open license
+  let options = {
+      uri: url,
+      transform: function (body) {
+          return cheerio.load(body);
+      }
+  };  
+  let titlesArray = [];
+  let paragraphsArray = [];
 
-  url = 'http://www.gutenberg.org/files/2701/2701-h/2701-h.htm';
+  requestP(options)
+    .then(function ($) {     
+        // scrape for titles and paragraphs   
+        let chapterTitles = $('h2');
+        let paragraphs = $('p');
 
-  request(url, function(error, response, html){
-    
-    console.log('Requesting...');
-    
-        if(!error){
-            var $ = cheerio.load(html, { xmlMode: true });
+        // get titles
+        $(chapterTitles).each( function(i, title) {  
+            let obj = {};
+            var text = $(this).text().trim(); // get text content
+            if ( text !== '' ) {
+                // populate obj
+                obj.identifier = i;
+                obj.content = text;
+                // add to main array
+                titlesArray.push(obj);
+            }             
+        });
+        
+        // get paras
+        $(paragraphs).each( function(i, para) {  
+            let obj = {}; 
+            var text = $(this).text().trim(); // get text content
+            if ( text !== '' ) {
+                // populate obj
+                obj.identifier = i;
+                obj.content = text;
+                // add to main array
+                paragraphsArray.push(obj); 
+            }            
+        });
+    })
+    .then(function() {
+        console.log('Done scraping');
 
-            var paragraphs = $('p').textContent;
-            var stringParagraphs = JSON.stringify(paragraphs, null, 4);
+        // parse arrays to json
+        let titlesParsed = JSON.stringify(titlesArray, null, 4);
+        let paragraphsParsed = JSON.stringify(paragraphsArray, null, 4);
 
-            res.send(paragraphs);
+        // get comma-less pseudo json for mLab import...
+        let titlesStripped = titlesArray.map( item => {  
+            return JSON.stringify(item);            
+        }).join("\n");
+        let paragraphsStripped = paragraphsArray.map( item => {  
+            return JSON.stringify(item);            
+        }).join("\n");
 
-            fs.writeFile('outputString.json', data, function(err) {            
-                console.log('File successfully written!');        
-            });            
-    
-        }
+        // write json output to json files 
+        fs.writeFile('titles.json', titlesParsed, function(err) {            
+            console.log('Titles json file written!');        
+        }); 
+        fs.writeFile('paragraphs.json', paragraphsParsed, function(err) {            
+            console.log('Paragraphs json file written!');        
+        }); 
 
+        // write string output to txt files 
+        fs.writeFile('titles.txt', titlesStripped, function(err) {            
+            console.log('Titles string file written!');        
+        }); 
+        fs.writeFile('paragraphs.txt', paragraphsStripped, function(err) {            
+            console.log('Paragraphs string file written!');        
+        }); 
+
+    })
+    .catch(function (err) {
+        console.log(err);
     });
 
-});
-
-// set the server listening
-app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
-});
-
-console.log('Load "http://localhost:PORT/scrape" to request scrape data');
+    console.log('working...');
 
 // error handling?
 process.on('uncaughtException', function (err) {

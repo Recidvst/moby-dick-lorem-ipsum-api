@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router({mergeParams: true});
 const mongoose = require('mongoose');
-const User = require('../models/users');
+const User = require('../models/usersModel');
 // encryption
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
