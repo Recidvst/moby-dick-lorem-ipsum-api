@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const verifyToken = require('./auth');
 
 // GET ALL ( GET )
-router.get('/', (request, response, next) => {
+router.get('/', verifyToken, (request, response, next) => {
     console.log('get all');
     mongoose.model( 'Title' ).find( {}, function(err, titles) {
         if (err) response.send(err);
@@ -18,7 +18,7 @@ router.get('/', (request, response, next) => {
 });
 
 // GET ONE RANDOM ( GET )
-router.get('/random', (request, response, next) => {
+router.get('/random', verifyToken, (request, response, next) => {
     Title.aggregate( [ { $sample: { size : 1} } ], 
     function(err, result){ 
         if (err) response.status(400).send(err);
@@ -27,7 +27,7 @@ router.get('/random', (request, response, next) => {
 });
 
 // GET MULTIPLE RANDOM ( GET )
-router.get('/random/:count', (request, response, next) => {
+router.get('/random/:count', verifyToken, (request, response, next) => {
     let count = parseInt(request.params.count); // param returns string
     Title.aggregate( [ { $sample: { size : count} } ], 
     function(err, result){ 
@@ -37,7 +37,7 @@ router.get('/random/:count', (request, response, next) => {
 });
 
 // GET ONE SPECIFIC ( GET )
-router.get('/:id', (request, response, next) => {
+router.get('/:id', verifyToken, (request, response, next) => {
     let titleID = request.params.id;
     if ( typeof request.params.id === 'string' ) {
         titleID = parseInt(titleID);
