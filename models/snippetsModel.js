@@ -12,4 +12,4 @@ let snippetSchema = new Schema({
 });
 
 // export the schema as a model for use in app
-module.exports = mongoose.model('Snippet', snippetSchema, 'Snippets'); // mongo sometimes needs the collection name specifying..
+module.exports = mongoose.model('Snippet', snippetSchema, 'paragraphs'); // mongo sometimes needs the collection name specifying..

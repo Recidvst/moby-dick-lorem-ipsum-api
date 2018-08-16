@@ -14,10 +14,10 @@ router.get('/', verifyToken, (request, response, next) => {
     });
 });
 
-// GET ONE ( GET )
+// GET ONE SPECIFIC ( GET )
 router.get('/:id', verifyToken, (request, response, next) => {
     let snippetID = decodeURI(request.params.id);
-    mongoose.model( 'Snippet' ).find( {id:snippetID}, function(err, snippet) {
+    mongoose.model( 'Snippet' ).find( {identifier:snippetID}, function(err, snippet) {
         console.log(snippet);
         if (err) response.send(err);
         response.status(200).json(snippet);
