@@ -1,12 +1,13 @@
 {
-  "name": "moby-dick-lorem-ipsum",
+  "name": "moby-dick-lorem-ipsum-api",
   "version": "1.0.0",
   "description": "To produce a mighty book, you must choose a mighty theme.",
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git+"
+    "url": "git+https://github.com/Recidvst/moby-dick-lorem-ipsum.git"
   },
+  "homepage": "https://github.com/Recidvst/moby-dick-lorem-ipsum#readme",
   "author": "Chris Snowden <cdsnowden@gmail.com>",
   "license": "MIT",
   "dependencies": {
