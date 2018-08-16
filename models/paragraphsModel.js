@@ -2,14 +2,14 @@
 const mongoose = require('mongoose');
 // define a schema
 const Schema = mongoose.Schema;
-let snippetSchema = new Schema({
+let paragraphSchema = new Schema({
     content: {
         type: String,
-        required: 'A snippet is required'
+        required: 'Content is required'
     },
 }, {
     timestamps: true
 });
 
 // export the schema as a model for use in app
-module.exports = mongoose.model('Snippet', snippetSchema, 'paragraphs'); // mongo sometimes needs the collection name specifying..
+module.exports = mongoose.model('Paragraph', paragraphSchema, 'paragraphs');

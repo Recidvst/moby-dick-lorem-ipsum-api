@@ -12,4 +12,4 @@ let titleschema = new Schema({
 });
 
 // export the schema as a model for use in app
-module.exports = mongoose.model('Title', titleschema, 'titles'); // mongo sometimes needs the collection name specifying..
+module.exports = mongoose.model('Title', titleschema, 'titles');

@@ -24,13 +24,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // define routes
-const snippetsRouter = require('./routes/snippets');
+const paragraphsRouter = require('./routes/paragraphs');
 const titlesRouter = require('./routes/titles');
 const usersRouter = require('./routes/users');
 const indexRouter = require('./routes/index');
 
 // get routes
-app.use('/snippets', snippetsRouter);
+app.use('/paragraphs', paragraphsRouter);
 app.use('/titles', titlesRouter);
 app.use('/users', usersRouter);
 app.use('/', indexRouter);
