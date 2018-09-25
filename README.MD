@@ -3,6 +3,7 @@
 > A Moby Dick themed Lorem Ipsum generator.
 > Nuxt/Vue frontend & Node/Express API.
 
-## [Lorem Ipsum generator](https://moby-dick-lorem-ipsum.chris-snowden.me)
-## [API](https://moby-dick-lorem-ipsum-api.chris-snowden.me)
+
+- [Check out the generator here](https://moby-dick-lorem-ipsum.chris-snowden.me)
+- [The generator repo](https://github.com/Recidvst/moby-dick-lorem-ipsum-frontend)
 
