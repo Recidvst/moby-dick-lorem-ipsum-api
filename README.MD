@@ -1,9 +1,6 @@
-# Moby Dick Lorem Ipsum API
+# Moby Dipsum API
 
-> A Moby Dick themed Lorem Ipsum generator.
-> Nuxt/Vue frontend & Node/Express API.
+> A Moby Dick themed Lorem Ipsum generator. This is the API built in Node/Express.
 
-
-- [Check out the generator here](https://moby-dick-lorem-ipsum.chris-snowden.me)
-- [The generator repo](https://github.com/Recidvst/moby-dick-lorem-ipsum-frontend)
+- [Check out the main app repo](https://github.com/Recidvst/moby-dick-lorem-ipsum-frontend)
 
