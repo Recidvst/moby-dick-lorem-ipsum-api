@@ -1,13 +1,13 @@
 {
   "name": "moby-dick-lorem-ipsum-api",
   "version": "1.0.0",
-  "description": "To produce a mighty book, you must choose a mighty theme.",
+  "description": "To produce a mighty book, you must choose a mighty theme. The Node/Express API for a Moby Dick themed Lorem Ipsum generator.",
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Recidvst/moby-dick-lorem-ipsum.git"
+    "url": "git+https://github.com/Recidvst/moby-dick-lorem-ipsum-api.git"
   },
-  "homepage": "https://github.com/Recidvst/moby-dick-lorem-ipsum#readme",
+  "homepage": "https://github.com/Recidvst/moby-dick-lorem-ipsum-api#readme",
   "author": "Chris Snowden <cdsnowden@gmail.com>",
   "license": "MIT",
   "dependencies": {
