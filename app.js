@@ -6,13 +6,15 @@ const morgan = require('morgan')
 const pretty = require('express-prettify');
 const cors = require('cors')
 const bodyParser = require('body-parser');
+const gnuHeader = require('node-gnu-clacks');
+
 // config/env
 require('dotenv').config();
 
 // declare app
 const app = express();
-const router = express.Router({mergeParams: true});
-const port = ( process.env.NODE_ENV === 'production' ) ? process.env.PORT : 3000;
+const router = express.Router({ mergeParams: true });
+const port = (process.env.NODE_ENV === 'production') ? process.env.PORT : 3000;
 
 // middleware
 app.use(morgan('combined'))
@@ -20,6 +22,7 @@ app.use(cors());
 app.use(pretty({ always: true, spaces: 2 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(gnuHeader());
 
 // define routes
 const paragraphsRouter = require('./routes/paragraphs');
