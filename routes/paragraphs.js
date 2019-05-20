@@ -9,7 +9,6 @@ const verifyToken = require('./auth');
 
 // GET ALL ( GET )
 router.get('/', verifyToken, (request, response, next) => {
-    console.log('get all');
     mongoose.model( 'Paragraph' ).find( {}, function(err, paragraphs) {
         if (err) response.send(err);
         response.status(200).json(paragraphs);

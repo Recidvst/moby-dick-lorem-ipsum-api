@@ -14,16 +14,14 @@ require('dotenv').config();
 
 // error tracking
 Sentry.init({ dsn: 'https://03f680301d6c463f81cd754997f26087@sentry.io/1463713' });
+Sentry.configureScope((scope) => {
+    scope.setUser({"username": "moby-dick-user"});
+});
 
 // declare app
 const app = express();
 const router = express.Router({ mergeParams: true });
 const port = (process.env.NODE_ENV === 'production') ? process.env.PORT : 3000;
-
-// sentry
-app.get('/', function mainHandler(req, res) {
-    throw new Error('Broke!');
-});
 
 // middleware
 app.use(Sentry.Handlers.requestHandler());
