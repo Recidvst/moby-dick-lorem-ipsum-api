@@ -11,6 +11,7 @@
   "author": "Chris Snowden <cdsnowden@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@sentry/node": "^5.2.0",
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",

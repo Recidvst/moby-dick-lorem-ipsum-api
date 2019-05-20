@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 let paragraphSchema = new Schema({
     content: {
         type: String,
-        required: 'Content is required'
+        required: 'Paragraph content is required'
     },
 }, {
     timestamps: true
