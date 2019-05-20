@@ -24,7 +24,7 @@
     "morgan": "^1.9.0",
     "node-gnu-clacks": "^1.0.1",
     "nodemon": "^1.18.3",
-    "pm2": "^3.0.3"
+    "pm2": "^3.5.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

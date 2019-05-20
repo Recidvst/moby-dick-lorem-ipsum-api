@@ -20,6 +20,11 @@ const app = express();
 const router = express.Router({ mergeParams: true });
 const port = (process.env.NODE_ENV === 'production') ? process.env.PORT : 3000;
 
+// sentry
+app.get('/', function mainHandler(req, res) {
+    throw new Error('Broke!');
+});
+
 // middleware
 app.use(Sentry.Handlers.requestHandler());
 app.use(morgan('combined'))
@@ -28,11 +33,6 @@ app.use(pretty({ always: true, spaces: 2 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(gnuHeader());
-app.use(Sentry.Handlers.errorHandler());
-app.use(function onError(err, req, res, next) {
-    res.statusCode = 500;
-    res.end(res.sentry + '\n');
-});
 
 // define routes
 const paragraphsRouter = require('./routes/paragraphs');
@@ -45,9 +45,12 @@ app.use('/paragraphs', paragraphsRouter);
 app.use('/titles', titlesRouter);
 app.use('/users', usersRouter);
 app.use('/', indexRouter);
+
 // sentry
-app.get('/', function mainHandler(req, res) {
-    throw new Error('Broke!');
+app.use(Sentry.Handlers.errorHandler());
+app.use(function onError(err, req, res, next) {
+    res.statusCode = 500;
+    res.end(res.sentry + '\n');
 });
 
 // set the server listening
