@@ -15,7 +15,7 @@ require('dotenv').config();
 // error tracking
 Sentry.init({ dsn: 'https://03f680301d6c463f81cd754997f26087@sentry.io/1463713' });
 Sentry.configureScope((scope) => {
-    scope.setUser({"username": "moby-dick-user"});
+  scope.setUser({"username": "moby-dick-user"});
 });
 
 // declare app
@@ -47,19 +47,19 @@ app.use('/', indexRouter);
 // sentry
 app.use(Sentry.Handlers.errorHandler());
 app.use(function onError(err, req, res, next) {
-    res.statusCode = 500;
-    res.end(res.sentry + '\n');
+  res.statusCode = 500;
+  res.end(res.sentry + '\n');
 });
 
 // set the server listening
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
 
 // error handling?
 process.on('uncaughtException', function (err) {
-    console.error(err);
-    console.error(err.stack);
+  console.error(err);
+  console.error(err.stack);
 });
 
 module.exports = app;
