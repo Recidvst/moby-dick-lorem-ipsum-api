@@ -60,13 +60,14 @@ if (bookURL && bookURL !== '/' && bookURL !== '') {
       }
 
       // get titles
+      let chapterIterator = 1;
       $(chapterTitles).each( function(i, title) {
         let obj = {};
         let titleText = $(this).text().trim(); // get text content
         if ( titleText !== '' ) {
           if (titleText.indexOf('CHAPTER') > -1) {
             // populate obj
-            obj.identifier = i;
+            obj.identifier = chapterIterator;
             // split unnecessary text out (e.g. "CHAPTER 6. The Street.")
             let splitText = titleText.split('. ');
             if (splitText && splitText.length > 1) {
@@ -75,20 +76,23 @@ if (bookURL && bookURL !== '/' && bookURL !== '') {
             obj.content = titleText;
             // add to main array
             titlesArray.push(obj);
+            chapterIterator++;
           }
         }
       });
 
       // get paras
+      let titleIterator = 1;
       $(paragraphs).each( function(i, para) {
         let obj = {};
         const paraText = $(this).text().trim(); // get text content
         if ( paraText !== '' ) {
           // populate obj
-          obj.identifier = i;
+          obj.identifier = titleIterator;
           obj.content = paraText;
           // add to main array
           paragraphsArray.push(obj);
+          titleIterator++;
         }
       });
     })
