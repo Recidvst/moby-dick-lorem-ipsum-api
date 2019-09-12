@@ -3,22 +3,34 @@ mongoose.Promise = global.Promise; // allow Promise use
 // config/env
 require('dotenv').config();
 
-// define db endpoint
-let mongoURL = process.env.MONGO_URL;
+// define db endpoints
+let mongoMobyURL = process.env.MONGO_URL_MOBY;
 if ( process.env.NODE_ENV === 'production' ) {
-    mongoURL = process.env.MONGO_LIVE;
+  mongoMobyURL = process.env.MONGO_LIVE_MOBY;
+}
+let mongoAliceURL = process.env.MONGO_URL_ALICE;
+if ( process.env.NODE_ENV === 'production' ) {
+  mongoAliceURL = process.env.MONGO_LIVE_ALICE;
 }
 
-// connect db
-mongoose.connect(mongoURL, { useNewUrlParser: true });
-var db = mongoose.connection;
+// create two db connections
+var mobyMongooseConnection = mongoose.createConnection(mongoMobyURL, { useNewUrlParser: true });
+var aliceMongooseConnection = mongoose.createConnection(mongoAliceURL, { useNewUrlParser: true });
 
-// test connection
-db.on('connected', () => {
-    console.log('Mongoose connected to ' + mongoURL);
+// test connections
+mobyMongooseConnection.on('connected', () => {
+  console.log('Mongoose connected to Moby db at ' + mongoMobyURL);
+});
+aliceMongooseConnection.on('connected', () => {
+  console.log('Mongoose connected to Alice db at ' + mongoAliceURL);
 });
 
 // error handling
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+mobyMongooseConnection.on('error', console.error.bind(console, 'MongoDB (moby) connection error:'));
+aliceMongooseConnection.on('error', console.error.bind(console, 'MongoDB (alice) connection error:'));
 
-module.exports = db
+// export the connections
+module.exports = {
+  mobyMongooseConnection: mobyMongooseConnection,
+  aliceMongooseConnection: aliceMongooseConnection
+};

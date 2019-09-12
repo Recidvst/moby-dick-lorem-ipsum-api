@@ -1,6 +1,5 @@
 // get core
 const express = require('express');
-const db = require('./db');
 // get middleware
 const Sentry = require('@sentry/node');
 const morgan = require('morgan')
