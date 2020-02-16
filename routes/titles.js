@@ -79,9 +79,6 @@ router.get('/alice/random/:count', verifyToken, (request, response, next) => {
 // GET ONE SPECIFIC MOBY ( GET )
 router.get('/:id', verifyToken, (request, response, next) => {
   let titleID = request.params.id;
-  if ( typeof request.params.id === 'string' ) {
-    titleID = parseInt(titleID);
-  }
   titlesModels.MobyTitleModel.findById(titleID, function(err, title) {
     if (err) response.status(400).send(err);
     response.status(200).json(title);
@@ -89,9 +86,6 @@ router.get('/:id', verifyToken, (request, response, next) => {
 });
 router.get('/moby-dick/:id', verifyToken, (request, response, next) => {
   let titleID = request.params.id;
-  if ( typeof request.params.id === 'string' ) {
-    titleID = parseInt(titleID);
-  }
   titlesModels.MobyTitleModel.findById(titleID, function(err, title) {
     if (err) response.status(400).send(err);
     response.status(200).json(title);
@@ -100,9 +94,6 @@ router.get('/moby-dick/:id', verifyToken, (request, response, next) => {
 // GET ONE SPECIFIC ALICE ( GET )
 router.get('/alice/:id', verifyToken, (request, response, next) => {
   let titleID = request.params.id;
-  if ( typeof request.params.id === 'string' ) {
-    titleID = parseInt(titleID);
-  }
   titlesModels.AliceTitleModel.findById(titleID, function(err, title) {
     if (err) response.status(400).send(err);
     response.status(200).json(title);

@@ -79,9 +79,6 @@ router.get('/alice/random/:count', verifyToken, (request, response, next) => {
 // GET ONE SPECIFIC MOBY ( GET )
 router.get('/:id', verifyToken, (request, response, next) => {
   let paragraphID = request.params.id;
-  if ( typeof request.params.id === 'string' ) {
-    paragraphID = parseInt(paragraphID);
-  }
   paragraphsModels.MobyParagraphModel.findById( paragraphID, function(err, paragraph) {
       if (err) response.status(400).send(err);
     response.status(200).json(paragraph);
@@ -89,9 +86,6 @@ router.get('/:id', verifyToken, (request, response, next) => {
 });
 router.get('/moby-dick/:id', verifyToken, (request, response, next) => {
   let paragraphID = request.params.id;
-  if ( typeof request.params.id === 'string' ) {
-    paragraphID = parseInt(paragraphID);
-  }
   paragraphsModels.MobyParagraphModel.findById( paragraphID, function(err, paragraph) {
       if (err) response.status(400).send(err);
     response.status(200).json(paragraph);
@@ -100,9 +94,6 @@ router.get('/moby-dick/:id', verifyToken, (request, response, next) => {
 // GET ONE SPECIFIC ALICE ( GET )
 router.get('/alice/:id', verifyToken, (request, response, next) => {
   let paragraphID = request.params.id;
-  if ( typeof request.params.id === 'string' ) {
-    paragraphID = parseInt(paragraphID);
-  }
   paragraphsModels.AliceParagraphModel.findById( paragraphID, function(err, paragraph) {
       if (err) response.status(400).send(err);
     response.status(200).json(paragraph);
