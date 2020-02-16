@@ -82,7 +82,7 @@ router.get('/:id', verifyToken, (request, response, next) => {
   if ( typeof request.params.id === 'string' ) {
     titleID = parseInt(titleID);
   }
-  titlesModels.MobyTitleModel.find( {_id:titleID}, function(err, title) {
+  titlesModels.MobyTitleModel.findById(titleID, function(err, title) {
     if (err) response.status(400).send(err);
     response.status(200).json(title);
   });
@@ -92,7 +92,7 @@ router.get('/moby-dick/:id', verifyToken, (request, response, next) => {
   if ( typeof request.params.id === 'string' ) {
     titleID = parseInt(titleID);
   }
-  titlesModels.MobyTitleModel.find( {_id:titleID}, function(err, title) {
+  titlesModels.MobyTitleModel.findById(titleID, function(err, title) {
     if (err) response.status(400).send(err);
     response.status(200).json(title);
   });
@@ -103,7 +103,7 @@ router.get('/alice/:id', verifyToken, (request, response, next) => {
   if ( typeof request.params.id === 'string' ) {
     titleID = parseInt(titleID);
   }
-  titlesModels.AliceTitleModel.find( {_id:titleID}, function(err, title) {
+  titlesModels.AliceTitleModel.findById(titleID, function(err, title) {
     if (err) response.status(400).send(err);
     response.status(200).json(title);
   });

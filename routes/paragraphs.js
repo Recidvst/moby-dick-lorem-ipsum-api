@@ -82,7 +82,7 @@ router.get('/:id', verifyToken, (request, response, next) => {
   if ( typeof request.params.id === 'string' ) {
     paragraphID = parseInt(paragraphID);
   }
-  paragraphsModels.MobyParagraphModel.find( {_id:paragraphID}, function(err, paragraph) {
+  paragraphsModels.MobyParagraphModel.findById( paragraphID, function(err, paragraph) {
       if (err) response.status(400).send(err);
     response.status(200).json(paragraph);
   });
@@ -92,7 +92,7 @@ router.get('/moby-dick/:id', verifyToken, (request, response, next) => {
   if ( typeof request.params.id === 'string' ) {
     paragraphID = parseInt(paragraphID);
   }
-  paragraphsModels.MobyParagraphModel.find( {_id:paragraphID}, function(err, paragraph) {
+  paragraphsModels.MobyParagraphModel.findById( paragraphID, function(err, paragraph) {
       if (err) response.status(400).send(err);
     response.status(200).json(paragraph);
   });
@@ -103,7 +103,7 @@ router.get('/alice/:id', verifyToken, (request, response, next) => {
   if ( typeof request.params.id === 'string' ) {
     paragraphID = parseInt(paragraphID);
   }
-  paragraphsModels.AliceParagraphModel.find( {_id:paragraphID}, function(err, paragraph) {
+  paragraphsModels.AliceParagraphModel.findById( paragraphID, function(err, paragraph) {
       if (err) response.status(400).send(err);
     response.status(200).json(paragraph);
   });
