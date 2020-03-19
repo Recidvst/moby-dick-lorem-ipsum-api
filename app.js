@@ -7,6 +7,18 @@ const pretty = require('express-prettify');
 const cors = require('cors')
 const bodyParser = require('body-parser');
 const gnuHeader = require('node-gnu-clacks');
+var graphqlHTTP = require('express-graphql');
+var {
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLID,
+  GraphQLString,
+  GraphQLList,
+  GraphQLFloat,
+  GraphQLNonNull,
+} = require('graphql');
+const titlesMongoModels = require('./models/titlesModel');
+const paragraphsMongoModels = require('./models/paragraphsModel');
 
 // config/env
 require('dotenv').config();
@@ -30,6 +42,69 @@ app.use(pretty({ always: true, spaces: 2 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(gnuHeader());
+
+// graphql integration
+const RootQueryType = new GraphQLObjectType({ // root query
+  name: 'Query',
+  description: 'Root Query',
+  fields: () => ({
+    titles: {
+      type: new GraphQLList(TitleType),
+      description: 'Chapter Titles',
+      resolve: (obj, args, context, info) => titlesMongoModels.MobyTitleModel.find( {} ),
+    },
+    paragraphs: {
+      type: new GraphQLList(ParagraphType),
+      description: 'Paragraphs',
+      resolve: (obj, args, context, info) => paragraphsMongoModels.MobyParagraphModel.find( {} ),
+    }
+  })
+})
+
+// TYPES
+// titles
+const TitleType = new GraphQLObjectType({
+  name: 'Titles',
+  description: 'Titles Type',
+  fields: () => ({
+    _id: {
+      type: GraphQLNonNull(GraphQLID),
+    },
+    identifier: {
+      type: GraphQLFloat,
+    },
+    content: {
+      type: GraphQLNonNull(GraphQLString),
+    }
+  })
+})
+// titles
+const ParagraphType = new GraphQLObjectType({
+  name: 'Paragraphs',
+  description: 'Paragraphs Type',
+  fields: () => ({
+    _id: {
+      type: GraphQLNonNull(GraphQLID),
+    },
+    identifier: {
+      type: GraphQLFloat,
+    },
+    content: {
+      type: GraphQLNonNull(GraphQLString),
+    }
+  })
+})
+
+// schema
+const schema = new GraphQLSchema({
+  query: RootQueryType
+})
+
+// use graphql
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  graphiql: true,
+}));
 
 // define routes
 const paragraphsRouter = require('./routes/paragraphs');
