@@ -16,7 +16,9 @@ var {
   GraphQLList,
   GraphQLFloat,
   GraphQLNonNull,
+  GraphQLError,
 } = require('graphql');
+const mongoose = require('mongoose');
 const titlesMongoModels = require('./models/titlesModel');
 const paragraphsMongoModels = require('./models/paragraphsModel');
 
@@ -51,17 +53,67 @@ const RootQueryType = new GraphQLObjectType({ // root query
     titles: {
       type: new GraphQLList(TitleType),
       description: 'Chapter Titles',
-      resolve: (obj, args, context, info) => titlesMongoModels.MobyTitleModel.find( {} ),
+      args: {
+        book: { type: GraphQLString },
+        _id: { type: GraphQLID },
+      },
+      resolve: (obj, args, context, info) => {
+        // book must be avail if passed
+        if (args.book && args.book.length > 0 && ['moby', 'moby-dick', 'alice'].indexOf(args.book) < 0) {
+          throw new GraphQLError ("Book name argument must be valid and available");
+        };
+        // id must be right format if passed
+        if (args._id && !mongoose.Types.ObjectId.isValid(args._id)) {
+          throw new GraphQLError ("ID argument name must be a valid Mongoose ObjectId");
+        };
+        // return moby or alice
+        if (args.book && args.book.toLowerCase().trim() === 'alice') {
+          if (args._id) {
+            return titlesMongoModels.AliceTitleModel.find( {_id: args._id} );
+          }
+          return titlesMongoModels.AliceTitleModel.find( {} );
+        } else {
+          if (args._id) {
+            return titlesMongoModels.MobyTitleModel.find( {_id: args._id} );
+          }
+          return titlesMongoModels.MobyTitleModel.find( {} );
+        }
+      },
     },
     paragraphs: {
       type: new GraphQLList(ParagraphType),
       description: 'Paragraphs',
-      resolve: (obj, args, context, info) => paragraphsMongoModels.MobyParagraphModel.find( {} ),
+      args: {
+        book: { type: GraphQLString },
+        _id: { type: GraphQLID },
+      },
+      resolve: (obj, args, context, info) => {
+        // book must be avail if passed
+        if (args.book && args.book.length > 0 && ['moby', 'moby-dick', 'alice'].indexOf(args.book) < 0) {
+          throw new GraphQLError ("Book name argument must be valid and available");
+        };
+        // id must be right format if passed
+        if (args._id && !mongoose.Types.ObjectId.isValid(args._id)) {
+          throw new GraphQLError ("ID argument name must be a valid Mongoose ObjectId");
+        };
+        // return moby or alice
+        if (args.book && args.book.toLowerCase().trim() === 'alice') {
+          if (args._id) {
+            return paragraphsMongoModels.AliceParagraphModel.find( {_id: args._id} );
+          }
+          return paragraphsMongoModels.AliceParagraphModel.find( {} );
+        } else {
+          if (args._id) {
+            return paragraphsMongoModels.MobyParagraphModel.find( {_id: args._id} );
+          }
+          return paragraphsMongoModels.MobyParagraphModel.find( {} );
+        }
+      },
     }
   })
 })
 
-// TYPES
+// TYPES //
 // titles
 const TitleType = new GraphQLObjectType({
   name: 'Titles',
