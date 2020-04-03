@@ -16,6 +16,7 @@
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
+    "cross-env": "^7.0.2",
     "express": "^4.16.3",
     "express-graphql": "^0.9.0",
     "forever": "^0.15.3",
@@ -30,8 +31,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production nohup forever app.js &",
-    "prod": "NODE_ENV=production pm2 start app.js -i max",
+    "start": "cross-env NODE_ENV=production nohup forever app.js &",
+    "prod": "cross-env NODE_ENV=production pm2 start app.js -i max",
     "dev": "nodemon --watch app.js",
     "scrape": "node scraper.js",
     "lint": "eslint **/*.js"
