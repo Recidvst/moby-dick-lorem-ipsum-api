@@ -7,6 +7,8 @@ const pretty = require('express-prettify');
 const cors = require('cors')
 const bodyParser = require('body-parser');
 const gnuHeader = require('node-gnu-clacks');
+const graphqlHTTP = require('express-graphql');
+const graphqlSchema = require('./graphql/schema.js');
 
 // config/env
 require('dotenv').config();
@@ -27,7 +29,14 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(morgan('combined'))
 app.use(cors());
 app.use(pretty({ always: true, spaces: 2 }));
-app.use(bodyParser.json());
+
+// use graphql
+app.use('/graphql', graphqlHTTP({
+  schema: graphqlSchema,
+  graphiql: true,
+}));
+
+app.use(bodyParser.json()); // don't use for graphql endpoint
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(gnuHeader());
 

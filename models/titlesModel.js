@@ -9,6 +9,9 @@ let titleschema = new Schema({
     type: String,
     required: 'A chapter title is required'
   },
+  identifier: {
+    type: Number,
+  },
 }, {
   timestamps: true
 });

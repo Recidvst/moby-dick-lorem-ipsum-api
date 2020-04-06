@@ -9,6 +9,9 @@ let paragraphSchema = new Schema({
     type: String,
     required: 'Paragraph content is required'
   },
+  identifier: {
+    type: Number,
+  },
 }, {
   timestamps: true
 });
