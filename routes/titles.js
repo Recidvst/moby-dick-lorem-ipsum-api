@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router({mergeParams: true});
 const titlesModels = require('../models/titlesModel');
 // encryption
-const verifyToken = require('./auth');
+const authFuncs = require('./auth');
+const verifyToken = authFuncs.expressVerifyToken;
 
 // GET ALL MOBY ( GET )
 router.get('/', verifyToken, (request, response, next) => {
