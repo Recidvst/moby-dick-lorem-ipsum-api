@@ -8,7 +8,8 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 const gnuHeader = require('node-gnu-clacks');
 const graphqlHTTP = require('express-graphql');
-const graphqlSchema = require('./graphql/schema.js');
+const graphQLRootQuery = require('./graphql/query.js');
+const { GraphQLSchema } = require('graphql');
 
 // config/env
 require('dotenv').config();
@@ -31,8 +32,11 @@ app.use(cors());
 app.use(pretty({ always: true, spaces: 2 }));
 
 // use graphql
+const schema = new GraphQLSchema({ // schema
+  query: graphQLRootQuery
+})
 app.use('/graphql', graphqlHTTP({
-  schema: graphqlSchema,
+  schema: schema,
   graphiql: true,
 }));
 
