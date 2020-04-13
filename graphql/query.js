@@ -1,5 +1,4 @@
 var {
-  GraphQLSchema,
   GraphQLObjectType,
   GraphQLID,
   GraphQLString,
@@ -11,12 +10,12 @@ var {
 // mongoose
 const mongoose = require('mongoose');
 // models
-const titlesMongoModels = require('./../models/titlesModel');
-const paragraphsMongoModels = require('./../models/paragraphsModel');
+const titlesMongoModels = require('../models/titlesModel');
+const paragraphsMongoModels = require('../models/paragraphsModel');
 // types
 const Types = require('./types.js');
 // encryption
-const authFuncs = require('./../routes/auth');
+const authFuncs = require('../routes/auth');
 const verifyToken = authFuncs.graphqlVerifyToken;
 
 // graphql integration
@@ -76,7 +75,7 @@ const RootQueryType = new GraphQLObjectType({ // root query
             if (random) {
               return titlesMongoModels.AliceTitleModel.aggregate( [ { $sample: { size : queryAmount} } ]);
             } else {
-              return titlesMongoModels.AliceTitleModel.find( {} ).limit(queryAmount);
+              return titlesMongoModels.AliceTitleModel.find( {} ).sort({identifier: 1}).limit(queryAmount); // sort by identifier to show first in line not first uploaded
             }
 
           } else {
@@ -86,7 +85,7 @@ const RootQueryType = new GraphQLObjectType({ // root query
             if (random) {
               return titlesMongoModels.MobyTitleModel.aggregate( [ { $sample: { size : queryAmount} } ]);
             } else {
-              return titlesMongoModels.MobyTitleModel.find( {} ).limit(queryAmount);
+              return titlesMongoModels.MobyTitleModel.find( {} ).sort({identifier: 1}).limit(queryAmount);
             }
           }
         })
@@ -148,7 +147,7 @@ const RootQueryType = new GraphQLObjectType({ // root query
             if (random) {
               return paragraphsMongoModels.AliceParagraphModel.aggregate( [ { $sample: { size : queryAmount} } ]);
             } else {
-              return paragraphsMongoModels.AliceParagraphModel.find( {} ).limit(queryAmount);
+              return paragraphsMongoModels.AliceParagraphModel.find( {} ).sort({identifier: 1}).limit(queryAmount);
             }
 
           } else {
@@ -158,7 +157,7 @@ const RootQueryType = new GraphQLObjectType({ // root query
             if (random) {
               return paragraphsMongoModels.MobyParagraphModel.aggregate( [ { $sample: { size : queryAmount} } ]);
             } else {
-              return paragraphsMongoModels.MobyParagraphModel.find( {} ).limit(queryAmount);
+              return paragraphsMongoModels.MobyParagraphModel.find( {identifier: { $gt: 222 }} ).sort({identifier: 1}).limit(queryAmount); // for moby dick paragraphs specifically start at 'Call me Ishmael' (223) instead of zero index as more artistically appropriate
             }
           }
         })
@@ -171,9 +170,5 @@ const RootQueryType = new GraphQLObjectType({ // root query
   })
 })
 
-// schema
-const schema = new GraphQLSchema({
-  query: RootQueryType
-})
-
-module.exports = schema;
+// export query
+module.exports = RootQueryType;
