@@ -17,6 +17,8 @@ const Types = require('./types.js');
 // encryption
 const authFuncs = require('../routes/auth');
 const verifyToken = authFuncs.graphqlVerifyToken;
+// valid book names
+const allowedNames = ['moby', 'moby-dick', 'moby_dick', 'alice', 'alice-in-wonderland', 'alice_in_wonderland'];
 
 // graphql integration
 const RootQueryType = new GraphQLObjectType({ // root query
@@ -28,8 +30,9 @@ const RootQueryType = new GraphQLObjectType({ // root query
       description: 'Chapter Titles',
       args: {
         book: { type: GraphQLString },
+        books: { type: new GraphQLList(GraphQLString) }, // for querying multiple
         _id: { type: GraphQLID },
-        count: { type: GraphQLInt },
+        count: { type: GraphQLInt, defaultValue: 0 }, // default to zero which returns all
         random: { type: GraphQLBoolean },
       },
       resolve: (obj, args, context, info) => {
@@ -39,8 +42,12 @@ const RootQueryType = new GraphQLObjectType({ // root query
         .then( () => {
           // CHECKS //
           // book must be avail if passed
-          if (args.book && args.book.length > 0 && ['moby', 'moby-dick', 'moby_dick', 'alice', 'alice-in-wonderland', 'alice_in_wonderland'].indexOf(args.book) < 0) {
+          if (args.book && args.book.length > 0 && allowedNames.indexOf(args.book) < 0) {
             throw new GraphQLError ("Book name argument must be valid and available");
+          };
+          // books must be valid arr and avail if passed
+          if (args.books && (!Array.isArray(args.books) || args.books.length < 1 || !args.books.some(r=> allowedNames.includes(r)))) {
+            throw new GraphQLError ("Books must be a valid array and arguments must be valid and available");
           };
           // id must be right format if passed
           if (args._id && !mongoose.Types.ObjectId.isValid(args._id)) {
@@ -55,12 +62,6 @@ const RootQueryType = new GraphQLObjectType({ // root query
             throw new GraphQLError ("Random argument name must be a Boolean");
           };
 
-          // DETERMINE AMOUNT
-          let queryAmount = 1; // default
-          if (args.count) {
-            queryAmount = args.count;
-          }
-
           // DETERMINE RANDOM
           let random = false; // default
           if (args.random && args.random === true) {
@@ -68,24 +69,23 @@ const RootQueryType = new GraphQLObjectType({ // root query
           }
 
           // return moby or alice
-          if (args.book && args.book.toLowerCase().trim() === 'alice') {
+          if ( (args.book && args.book.toLowerCase().trim().indexOf('alice') > -1) || (args.books && args.books.some(element => element.includes("alice"))) ) {
             if (args._id) {
               return titlesMongoModels.AliceTitleModel.find( {_id: args._id} );
             }
             if (random) {
-              return titlesMongoModels.AliceTitleModel.aggregate( [ { $sample: { size : queryAmount} } ]);
+              return titlesMongoModels.AliceTitleModel.aggregate( [ { $sample: { size : args.count || 1} } ]);
             } else {
-              return titlesMongoModels.AliceTitleModel.find( {} ).sort({identifier: 1}).limit(queryAmount); // sort by identifier to show first in line not first uploaded
+              return titlesMongoModels.AliceTitleModel.find( {} ).sort({identifier: 1}).limit(args.count); // sort by identifier to show first in line not first uploaded
             }
-
           } else {
             if (args._id) {
               return titlesMongoModels.MobyTitleModel.find( {_id: args._id} );
             }
             if (random) {
-              return titlesMongoModels.MobyTitleModel.aggregate( [ { $sample: { size : queryAmount} } ]);
+              return titlesMongoModels.MobyTitleModel.aggregate( [ { $sample: { size : args.count || 1} } ]);
             } else {
-              return titlesMongoModels.MobyTitleModel.find( {} ).sort({identifier: 1}).limit(queryAmount);
+              return titlesMongoModels.MobyTitleModel.find( {} ).sort({identifier: 1}).limit(args.count);
             }
           }
         })
@@ -100,8 +100,9 @@ const RootQueryType = new GraphQLObjectType({ // root query
       description: 'Paragraphs',
       args: {
         book: { type: GraphQLString },
+        books: { type: new GraphQLList(GraphQLString) }, // for querying multiple
         _id: { type: GraphQLID },
-        count: { type: GraphQLInt },
+        count: { type: GraphQLInt, defaultValue: 0 }, // default to zero which returns all
         random: { type: GraphQLBoolean },
       },
       resolve: (obj, args, context, info) => {
@@ -111,8 +112,12 @@ const RootQueryType = new GraphQLObjectType({ // root query
         .then( () => {
           // CHECKS //
           // book must be avail if passed
-          if (args.book && args.book.length > 0 && ['moby', 'moby-dick', 'moby_dick', 'alice', 'alice-in-wonderland', 'alice_in_wonderland'].indexOf(args.book) < 0) {
+          if (args.book && args.book.length > 0 && allowedNames.indexOf(args.book) < 0) {
             throw new GraphQLError ("Book name argument must be valid and available");
+          };
+          // books must be valid arr and avail if passed
+          if (args.books && (!Array.isArray(args.books) || args.books.length < 1 || !args.books.some(r=> allowedNames.includes(r)))) {
+            throw new GraphQLError ("Books must be a valid array and arguments must be valid and available");
           };
           // id must be right format if passed
           if (args._id && !mongoose.Types.ObjectId.isValid(args._id)) {
@@ -127,12 +132,6 @@ const RootQueryType = new GraphQLObjectType({ // root query
             throw new GraphQLError ("Random argument name must be a Boolean");
           };
 
-          // DETERMINE AMOUNT
-          let queryAmount = 1; // default
-          if (args.count && Number.isInteger(args.count)) {
-            queryAmount = args.count;
-          }
-
           // DETERMINE RANDOM
           let random = false; // default
           if (args.random && args.random === true) {
@@ -140,14 +139,14 @@ const RootQueryType = new GraphQLObjectType({ // root query
           }
 
           // return moby or alice
-          if (args.book && args.book.toLowerCase().trim() === 'alice') {
+          if ( (args.book && args.book.toLowerCase().trim().indexOf('alice') > -1) || (args.books && args.books.some(element => element.includes("alice"))) ) {
             if (args._id) {
               return paragraphsMongoModels.AliceParagraphModel.find( {_id: args._id} );
             }
             if (random) {
-              return paragraphsMongoModels.AliceParagraphModel.aggregate( [ { $sample: { size : queryAmount} } ]);
+              return paragraphsMongoModels.AliceParagraphModel.aggregate( [ { $sample: { size : args.count || 1} } ]);
             } else {
-              return paragraphsMongoModels.AliceParagraphModel.find( {} ).sort({identifier: 1}).limit(queryAmount);
+              return paragraphsMongoModels.AliceParagraphModel.find( {} ).sort({identifier: 1}).limit(args.count);
             }
 
           } else {
@@ -155,9 +154,9 @@ const RootQueryType = new GraphQLObjectType({ // root query
               return paragraphsMongoModels.MobyParagraphModel.find( {_id: args._id} );
             }
             if (random) {
-              return paragraphsMongoModels.MobyParagraphModel.aggregate( [ { $sample: { size : queryAmount} } ]);
+              return paragraphsMongoModels.MobyParagraphModel.aggregate( [ { $sample: { size : args.count || 1} } ]);
             } else {
-              return paragraphsMongoModels.MobyParagraphModel.find( {identifier: { $gt: 222 }} ).sort({identifier: 1}).limit(queryAmount); // for moby dick paragraphs specifically start at 'Call me Ishmael' (223) instead of zero index as more artistically appropriate
+              return paragraphsMongoModels.MobyParagraphModel.find( {identifier: { $gt: 222 }} ).sort({identifier: 1}).limit(args.count); // for moby dick paragraphs specifically start at 'Call me Ishmael' (223) instead of zero index as more artistically appropriate
             }
           }
         })
