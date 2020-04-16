@@ -62,7 +62,7 @@ const BookType = new GraphQLObjectType({
   description: 'Book Type',
   fields: () => ({
     title: {
-      type: GraphQLNonNull(GraphQLID),
+      type: GraphQLNonNull(GraphQLString),
     },
     titles: {
       type: new GraphQLList(TitleType),
