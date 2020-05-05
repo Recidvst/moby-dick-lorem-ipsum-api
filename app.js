@@ -2,6 +2,7 @@
 const express = require('express');
 // get middleware
 const Sentry = require('@sentry/node');
+const SENTRY_DSN = process.env.SENTRY_DSN || false;
 const morgan = require('morgan')
 const pretty = require('express-prettify');
 const cors = require('cors')
@@ -15,8 +16,8 @@ const { GraphQLSchema } = require('graphql');
 require('dotenv').config();
 
 // error tracking
-if (process.env.NODE_ENV === 'production') {
-  Sentry.init({ dsn: 'https://03f680301d6c463f81cd754997f26087@sentry.io/1463713' });
+if (process.env.NODE_ENV === 'production' && SENTRY_DSN) {
+  Sentry.init({ dsn: SENTRY_DSN });
   Sentry.configureScope((scope) => {
     scope.setUser({"username": "moby-dick-user"});
   });
@@ -28,7 +29,7 @@ const router = express.Router({ mergeParams: true });
 const port = (process.env.NODE_ENV === 'production') ? process.env.PORT : 3001;
 
 // middleware
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && SENTRY_DSN) {
   app.use(Sentry.Handlers.requestHandler());
 }
 app.use(morgan('combined'))
@@ -61,7 +62,7 @@ app.use('/users', usersRouter);
 app.use('/', indexRouter);
 
 // sentry
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && SENTRY_DSN) {
   app.use(Sentry.Handlers.errorHandler());
   app.use(function onError(err, req, res, next) {
     res.statusCode = 500;
