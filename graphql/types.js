@@ -70,6 +70,8 @@ const BookType = new GraphQLObjectType({
       args: {
         _id: { type: GraphQLID },
         count: { type: GraphQLInt, defaultValue: 0 }, // default to zero which returns all
+        skip: { type: GraphQLInt, defaultValue: 0 }, // default to zero which is no offset
+        currentPage: { type: GraphQLInt, defaultValue: false }, // default to false to prevent skip
         random: { type: GraphQLBoolean },
       },
       resolve: (obj, args, context, info) => {
@@ -97,7 +99,7 @@ const BookType = new GraphQLObjectType({
             if (random) {
               return titlesMongoModels.AliceTitleModel.aggregate( [ { $sample: { size : args.count || 1} } ]);
             } else {
-              return titlesMongoModels.AliceTitleModel.find( {} ).sort({identifier: 1}).limit(args.count); // sort by identifier to show first in line not first uploaded
+              return titlesMongoModels.AliceTitleModel.find( {} ).sort({identifier: 1}).skip(args.skip).limit(args.count); // sort by identifier to show first in line not first uploaded
             }
           } else {
             if (args._id) {
@@ -106,7 +108,21 @@ const BookType = new GraphQLObjectType({
             if (random) {
               return titlesMongoModels.MobyTitleModel.aggregate( [ { $sample: { size : args.count || 1} } ]);
             } else {
-              return titlesMongoModels.MobyTitleModel.find( {} ).sort({identifier: 1}).limit(args.count);
+              // const count = titlesMongoModels.MobyTitleModel.count(); // or titlesMongoModels.MobyTitleModel.find( {} ).count() ?
+              // const totalPages = Math.ceil(count / args.count);
+              // return {
+              //   data: titlesMongoModels.MobyTitleModel.find( {} ).sort({identifier: 1}).skip(( args.currentPage && totalPages > args.currentPage) ? args.skip : 0).limit(args.count),
+              //   totalCount: count,
+              //   totalPages: totalPages
+              // }
+              return titlesMongoModels.MobyTitleModel.aggregate([
+                { '$find'    : {} },
+                { '$sort'     : { 'identifier' : 1 } },
+                { '$facet'    : {
+                  metadata: [ { $count: "total" }, { $addFields: { currentPage: NumberInt(3), totalPages: Math.ceil($count / args.count) } } ],
+                  data: [ { $skip: args.skip }, { $limit: args.count } ]
+                } }
+            ] )
             }
           }
         })
@@ -122,6 +138,7 @@ const BookType = new GraphQLObjectType({
       args: {
         _id: { type: GraphQLID },
         count: { type: GraphQLInt, defaultValue: 0 }, // default to zero which returns all
+        skip: { type: GraphQLInt, defaultValue: 0 }, // default to zero which is no offset
         random: { type: GraphQLBoolean },
       },
       resolve: (obj, args, context, info) => {
@@ -150,7 +167,7 @@ const BookType = new GraphQLObjectType({
             if (random) {
               return paragraphsMongoModels.AliceParagraphModel.aggregate( [ { $sample: { size : args.count || 1} } ]);
             } else {
-              return paragraphsMongoModels.AliceParagraphModel.find( {} ).sort({identifier: 1}).limit(args.count);
+              return paragraphsMongoModels.AliceParagraphModel.find( {} ).sort({identifier: 1}).skip(args.skip).limit(args.count);
             }
 
           } else {
@@ -160,7 +177,7 @@ const BookType = new GraphQLObjectType({
             if (random) {
               return paragraphsMongoModels.MobyParagraphModel.aggregate( [ { $sample: { size : args.count || 1} } ]);
             } else {
-              return paragraphsMongoModels.MobyParagraphModel.find( {identifier: { $gt: 222 }} ).sort({identifier: 1}).limit(args.count); // for moby dick paragraphs specifically start at 'Call me Ishmael' (223) instead of zero index as more artistically appropriate
+              return paragraphsMongoModels.MobyParagraphModel.find( {identifier: { $gt: 222 }} ).sort({identifier: 1}).skip(args.skip).limit(args.count); // for moby dick paragraphs specifically start at 'Call me Ishmael' (223) instead of zero index as more artistically appropriate
             }
           }
         })

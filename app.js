@@ -3,7 +3,7 @@ const express = require('express');
 // get middleware
 const Sentry = require('@sentry/node');
 const SENTRY_DSN = process.env.SENTRY_DSN || false;
-const morgan = require('morgan')
+const morgan = require('morgan');
 const pretty = require('express-prettify');
 const cors = require('cors')
 const bodyParser = require('body-parser');
