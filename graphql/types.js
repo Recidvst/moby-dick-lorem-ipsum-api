@@ -64,6 +64,33 @@ const BookType = new GraphQLObjectType({
     title: {
       type: GraphQLNonNull(GraphQLString),
     },
+    totalTitleCount: {
+      type: GraphQLInt,
+      description: 'Total titles available',
+      resolve: (obj, args, context, info) => {
+        // AUTH //
+        return verifyToken(context)
+        // token checked OK
+        .then( () => {
+          // set book name
+          const bookName = obj.title || 'moby';
+          args.book = bookName;
+
+          // CHECKS //
+          checkArgs(args);
+
+          if ( (args.book && args.book.toLowerCase().trim().indexOf('alice') > -1) ) { // return moby or alice
+            return titlesMongoModels.AliceTitleModel.count();
+          } else {
+            return titlesMongoModels.MobyTitleModel.count();
+          }
+        })
+        // token checked NOT OK
+        .catch( (err) => {
+          throw new GraphQLError (`Auth error:  ${err}`);
+        })
+      }
+    },
     titles: {
       type: new GraphQLList(TitleType),
       description: 'Chapter Titles Query',
@@ -71,7 +98,6 @@ const BookType = new GraphQLObjectType({
         _id: { type: GraphQLID },
         count: { type: GraphQLInt, defaultValue: 0 }, // default to zero which returns all
         skip: { type: GraphQLInt, defaultValue: 0 }, // default to zero which is no offset
-        currentPage: { type: GraphQLInt, defaultValue: false }, // default to false to prevent skip
         random: { type: GraphQLBoolean },
       },
       resolve: (obj, args, context, info) => {
@@ -108,21 +134,7 @@ const BookType = new GraphQLObjectType({
             if (random) {
               return titlesMongoModels.MobyTitleModel.aggregate( [ { $sample: { size : args.count || 1} } ]);
             } else {
-              // const count = titlesMongoModels.MobyTitleModel.count(); // or titlesMongoModels.MobyTitleModel.find( {} ).count() ?
-              // const totalPages = Math.ceil(count / args.count);
-              // return {
-              //   data: titlesMongoModels.MobyTitleModel.find( {} ).sort({identifier: 1}).skip(( args.currentPage && totalPages > args.currentPage) ? args.skip : 0).limit(args.count),
-              //   totalCount: count,
-              //   totalPages: totalPages
-              // }
-              return titlesMongoModels.MobyTitleModel.aggregate([
-                { '$find'    : {} },
-                { '$sort'     : { 'identifier' : 1 } },
-                { '$facet'    : {
-                  metadata: [ { $count: "total" }, { $addFields: { currentPage: NumberInt(3), totalPages: Math.ceil($count / args.count) } } ],
-                  data: [ { $skip: args.skip }, { $limit: args.count } ]
-                } }
-            ] )
+              return titlesMongoModels.MobyTitleModel.find( {} ).sort({identifier: 1}).skip(args.skip).limit(args.count);
             }
           }
         })
@@ -131,6 +143,33 @@ const BookType = new GraphQLObjectType({
           throw new GraphQLError (`Auth error:  ${err}`);
         })
       },
+    },
+    totalParagraphCount: {
+      type: GraphQLInt,
+      description: 'Total paragraphs available',
+      resolve: (obj, args, context, info) => {
+        // AUTH //
+        return verifyToken(context)
+        // token checked OK
+        .then( () => {
+          // set book name
+          const bookName = obj.title || 'moby';
+          args.book = bookName;
+
+          // CHECKS //
+          checkArgs(args);
+
+          if ( (args.book && args.book.toLowerCase().trim().indexOf('alice') > -1) ) { // return moby or alice
+            return paragraphsMongoModels.AliceParagraphModel.count();
+          } else {
+            return paragraphsMongoModels.MobyParagraphModel.count();
+          }
+        })
+        // token checked NOT OK
+        .catch( (err) => {
+          throw new GraphQLError (`Auth error:  ${err}`);
+        })
+      }
     },
     paragraphs: {
       type: new GraphQLList(ParagraphType),
