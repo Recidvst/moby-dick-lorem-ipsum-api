@@ -14,7 +14,10 @@ indent_size = 2
 [Makefile]
 indent_style = tab
 
+[*.md]
+trim_trailing_whitespace = false
+
 # Matches the exact files either package.json or .travis.yml
-[{package.json,gulpfile.js,travis.yml, **.yaml}]
+[{package.json,**.js,travis.yml,**.yaml}]
 indent_style = space
 indent_size = 2

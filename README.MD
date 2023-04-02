@@ -8,9 +8,7 @@
 
 #### Make your placeholder content more majestic with random paragraphs and chapter titles from the legendary book(s)
 
-- Using Vue.js/Nuxt for the frontend & Node/Express with MongoDB/GraphQL for the API.
+- Using Vue.js/Nuxt for the frontend & .NET Core with GraphQL & Mediatr for the API.
 - [Check it out](https://moby-dipsum.com)
 - Text courtesy of [Project Gutenberg](https://www.gutenberg.org/ebooks/2701)
 - Thanks to [Hero Patterns](https://www.heropatterns.com/) for the awesome SVG backgrounds
-
-Todo: migrate away from Mongodb Atlas as low tiers have limited functionality. Potentially recreate API in self-hosted Django..
