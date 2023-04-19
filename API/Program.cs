@@ -1,16 +1,16 @@
+using Data.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
+builder.Services.AddResponseCompression();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-builder.Services.AddGraphQLServer();
-// builder.Services.InitializeOnStartup();
-// builder.Services.AddQueryType();
-// builder.Services.AddProjections();
-// builder.Services.AddFiltering();
-// builder.Services.AddSorting();
+builder.Services.AddGraphQLServer().AddQueryType();
+builder.Services.AddEntityFrameworkSqlite().AddDbContext<DataContext>();
 
 var app = builder.Build();
 
@@ -21,8 +21,13 @@ if (app.Environment.IsDevelopment())
   app.UseSwaggerUI();
 }
 
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseResponseCompression();
 app.UseHttpsRedirection();
+
 app.UseAuthorization();
+
 app.MapControllers();
 app.MapGraphQL();
+
 app.Run();
