@@ -13,7 +13,7 @@ public class BookModelConfiguration : IEntityTypeConfiguration<BookModel>
     builder.Property(x => x.Id).IsRequired();
     builder.Property(x => x.Title).IsRequired();
     builder.Property(x => x.Author).IsRequired();
-    builder.Property(x => x.TotalTitleCount).IsRequired();
-    builder.Property(x => x.TotalParagraphCount).IsRequired();
+    // builder.Property(x => x.TotalTitleCount).IsRequired();
+    // builder.Property(x => x.TotalParagraphCount).IsRequired();
   }
 }

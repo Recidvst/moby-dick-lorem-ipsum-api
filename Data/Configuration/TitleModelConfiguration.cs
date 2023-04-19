@@ -11,7 +11,7 @@ public class TitleModelConfiguration : IEntityTypeConfiguration<TitleModel>
     builder.ToTable("Paragraphs", "dbo");
     builder.HasKey(x => x.Id);
     builder.Property(x => x.Id).IsRequired();
-    builder.Property(x => x.SoftId).IsRequired();
+    builder.Property(x => x.Position).IsRequired();
     builder.Property(x => x.Content).IsRequired();
     builder.Property(x => x.Book).IsRequired();
 

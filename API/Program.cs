@@ -6,7 +6,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddGraphQLServer();
-builder.Services.AddQueryType();
+// builder.Services.InitializeOnStartup();
+// builder.Services.AddQueryType();
+// builder.Services.AddProjections();
+// builder.Services.AddFiltering();
+// builder.Services.AddSorting();
 
 var app = builder.Build();
 
